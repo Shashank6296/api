@@ -9,7 +9,7 @@ const App = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('https://api-76o0.onrender.com/api/events');
+        const response = await axios.get('https://api-1-lemt.onrender.com/api/events');
         setEvents(response.data);
       } catch (error) {
         console.error('Error fetching events:', error);
