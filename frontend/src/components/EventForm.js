@@ -12,14 +12,16 @@ const EventForm = ({ setEvents, eventToEdit, setEventToEdit }) => {
     reminder: "",
   });
 
-  // Request notification permission on load
+  // Request notification permission on component load
   useEffect(() => {
     if (Notification.permission !== "granted") {
-      Notification.requestPermission();
+      Notification.requestPermission().catch((err) =>
+        console.error("Notification permission error:", err)
+      );
     }
   }, []);
 
-  // Populate form when editing an event
+  // Populate form with data when editing an event
   useEffect(() => {
     if (eventToEdit) {
       setFormData({
@@ -34,7 +36,7 @@ const EventForm = ({ setEvents, eventToEdit, setEventToEdit }) => {
     }
   }, [eventToEdit]);
 
-  // Handle form input changes
+  // Handle input field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -43,17 +45,25 @@ const EventForm = ({ setEvents, eventToEdit, setEventToEdit }) => {
   // Schedule a reminder notification
   const setReminderNotification = () => {
     if (formData.reminder) {
-      const reminderDate = new Date(formData.reminder); // Parse input as local date
-      const now = new Date();
+      const reminderDate = new Date(formData.reminder).getTime(); // UTC timestamp
+      const now = new Date().getTime(); // Current UTC timestamp
 
       if (reminderDate > now) {
-        const timeDifference = reminderDate.getTime() - now.getTime();
+        const timeDifference = reminderDate - now;
+
+        console.log(`Reminder set for ${formData.name} in ${timeDifference / 1000} seconds.`);
 
         setTimeout(() => {
-          new Notification("Event Reminder", {
-            body: `Reminder for event: ${formData.name} at ${formData.time}`,
-          });
+          try {
+            new Notification("Event Reminder", {
+              body: `Reminder for event: ${formData.name} at ${formData.time}`,
+            });
+          } catch (err) {
+            console.error("Notification error:", err);
+          }
         }, timeDifference);
+      } else {
+        console.warn("Reminder time is in the past. Notification not scheduled.");
       }
     }
   };
@@ -62,21 +72,21 @@ const EventForm = ({ setEvents, eventToEdit, setEventToEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Schedule notification
     setReminderNotification();
 
     try {
+      const API_BASE_URL = "http://localhost:5000/api/events";
+
       if (eventToEdit) {
         // Update existing event
-        const response = await axios.put(
-          `https://api-76o0.onrender.com${eventToEdit._id}`,
-          formData
-        );
+        const response = await axios.put(`${API_BASE_URL}/${eventToEdit._id}`, formData);
         setEvents((prevEvents) =>
           prevEvents.map((event) => (event._id === eventToEdit._id ? response.data : event))
         );
       } else {
-        // Create new event
-        const response = await axios.post("https://api-76o0.onrender.com/api/events", formData);
+        // Create a new event
+        const response = await axios.post(API_BASE_URL, formData);
         setEvents((prevEvents) => [...prevEvents, response.data]);
       }
 
