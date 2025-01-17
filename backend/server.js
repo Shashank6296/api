@@ -7,7 +7,7 @@ const eventRoutes = require('./routes/eventRoutes');
 dotenv.config();
 const app = express();
 
-// Allow multiple origins
+
 const allowedOrigins = [
   'https://api-1-lemt.onrender.com',
   'https://api-mu-wine.vercel.app'
