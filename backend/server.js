@@ -7,7 +7,7 @@ const eventRoutes = require('./routes/eventRoutes');
 dotenv.config();
 const app = express();
 
-app.use(cors({ origin: "https://api-t99t.vercel.app/" }));
+app.use(cors({ origin: "https://api-1-lemt.onrender.com" }));
 app.use(express.json());
 
 mongoose
