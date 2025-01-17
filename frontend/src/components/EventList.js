@@ -4,7 +4,7 @@ import axios from 'axios';
 const EventList = ({ events, setEvents }) => {
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://api-76o0.onrender.com/api/events/${id}`);
+      await axios.delete(`https://api-1-lemt.onrender.com/${id}`);
       setEvents((prevEvents) => prevEvents.filter((event) => event._id !== id));
     } catch (error) {
       console.error('Error deleting event:', error);
@@ -26,7 +26,7 @@ const EventList = ({ events, setEvents }) => {
           description: updatedDescription || eventToEdit.description,
         };
 
-        const response = await axios.put(`https://api-76o0.onrender.com/api/events/${id}`, updatedEvent);
+        const response = await axios.put(`https://api-1-lemt.onrender.com/${id}`, updatedEvent);
         setEvents((prevEvents) =>
           prevEvents.map((event) => (event._id === id ? response.data : event))
         );
