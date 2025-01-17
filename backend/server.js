@@ -7,10 +7,11 @@ const eventRoutes = require('./routes/eventRoutes');
 dotenv.config();
 const app = express();
 
-
+// Allow multiple origins
 const allowedOrigins = [
   'https://api-1-lemt.onrender.com',
-  'https://api-mu-wine.vercel.app'
+  'https://api-mu-wine.vercel.app',  // Make sure this is included
+  'https://api-t99t.vercel.app'      // Already included
 ];
 
 app.use(cors({
@@ -21,7 +22,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS')); // Block the origin
     }
   },
-  credentials: true, // If you need to support cookies/auth headers
+  credentials: true, // If you need cookies/auth headers
 }));
 
 app.use(express.json());
