@@ -7,11 +7,33 @@ const eventRoutes = require('./routes/eventRoutes');
 dotenv.config();
 const app = express();
 
-app.use(cors({origin: "https://api-t99t.vercel.app/"}));
+// Dynamic CORS configuration
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "https://api-t99t.vercel.app",
+      "https://testapi-k73l.vercel.app", // Add more origins as needed
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // If using cookies
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
+// Log incoming requests
+app.use((req, res, next) => {
+  console.log(`Request received: ${req.method} ${req.url} from ${req.headers.origin}`);
+  next();
+});
+
 mongoose
-  .connect('mongodb+srv://devshashank79:UIEyAOILrJVA8mLm@cluster0.ca7oq.mongodb.net/mydb')
+  .connect(process.env.MONGO_URI) // Use environment variable for MongoDB URI
   .then(() => console.log('MongoDB Connected'))
   .catch((err) => console.error(err));
 
