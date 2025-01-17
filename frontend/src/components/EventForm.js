@@ -76,7 +76,7 @@ const EventForm = ({ setEvents, eventToEdit, setEventToEdit }) => {
     setReminderNotification();
 
     try {
-      const API_BASE_URL = "http://localhost:5000/api/events";
+      const API_BASE_URL = "https://api-76o0.onrender.com/api/events";
 
       if (eventToEdit) {
         // Update existing event
